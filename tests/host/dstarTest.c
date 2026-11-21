@@ -118,7 +118,7 @@ static void test_slow(void)
 
 	make_header(&h, "K1ABC", "CQCQCQ");
 	dstar_header_pack(&h, raw);
-	dstar_slow_tx_init(&tx, raw, "Hello from the DM-32");
+	dstar_slow_tx_init(&tx, raw, "Testing D-STAR slow!");
 	dstar_slow_rx_reset(&rx);
 	for (int sf = 0; sf < 2; sf++)
 		for (uint8_t n = 1; n <= 20; n++) {
@@ -128,7 +128,7 @@ static void test_slow(void)
 			got |= dstar_slow_rx_frame(&rx, d, n);
 		}
 	CHECK(got & DSTAR_SLOW_MSG, "slow data: no message");
-	CHECK(memcmp(rx.msg, "Hello from the DM-32", 20) == 0, "slow data: message %.20s", rx.msg);
+	CHECK(memcmp(rx.msg, "Testing D-STAR slow!", 20) == 0, "slow data: message %.20s", rx.msg);
 	CHECK(got & DSTAR_SLOW_HEADER, "slow data: no header");
 	CHECK(memcmp(rx.hdr, raw, DSTAR_HDR_BYTES) == 0, "slow data: header differs");
 	// simple data: a line in pieces
@@ -266,7 +266,7 @@ static dstar_call_stats_t rx_run(const uint8_t *air, uint16_t from, uint16_t to,
 static void test_call(void)
 {
 	static uint8_t air[DSTAR_START_SYMS + FRAMES * DSTAR_FRAME_SYMS + DSTAR_END_SYMS + 16];
-	uint16_t n = tx_call(air, sizeof air, "Hello from the DM-32");
+	uint16_t n = tx_call(air, sizeof air, "Testing D-STAR slow!");
 	dstar_call_stats_t st;
 
 	// the whole call
@@ -276,7 +276,7 @@ static void test_call(void)
 	      "call: header %d my '%.8s'", got.last.have_header, got.last.hdr.my);
 	CHECK(got.nvoice == FRAMES, "call: %d voice frames, sent %d", got.nvoice, FRAMES);
 	CHECK(memcmp(got.frames, voice, sizeof voice) == 0, "call: voice frames differ");
-	CHECK(got.last.have_msg && strcmp(got.last.msg, "Hello from the DM-32") == 0, "call: message '%s'", got.last.msg);
+	CHECK(got.last.have_msg && strcmp(got.last.msg, "Testing D-STAR slow!") == 0, "call: message '%s'", got.last.msg);
 	CHECK(got.ends == 1 && st.ends == 1, "call: ended %d times (%u by its last frame)", got.ends, (unsigned)st.ends);
 	CHECK(st.headers == 1 && st.syncs == 3, "call: %u headers, %u data syncs", (unsigned)st.headers, (unsigned)st.syncs);
 
